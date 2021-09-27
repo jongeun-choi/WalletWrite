@@ -58,14 +58,6 @@ public class WalletWriteConsumer {
 
                                 AnalysisDTO analysisDTO = objectMapper.readValue(record.value(), AnalysisDTO.class);
 
-                                if(analysisDTO.getType()==AnalysisType.buying){
-                                    System.out.println(" \n도착 : Buying !!!");
-                                }
-
-                                if(analysisDTO.getType()==AnalysisType.selling){
-                                    System.out.println(" \n도착 : Selling !!!");
-                                }
-
 
                                 // 사용방법
                                 //UserIdCreated userIdCreated = objectMapper.readValue(record.value(), UserIdCreated.class);

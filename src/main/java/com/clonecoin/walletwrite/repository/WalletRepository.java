@@ -1,10 +1,8 @@
 package com.clonecoin.walletwrite.repository;
 
 import com.clonecoin.walletwrite.domain.Wallet;
-import com.clonecoin.walletwrite.domain.event.WalletCreatedDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 

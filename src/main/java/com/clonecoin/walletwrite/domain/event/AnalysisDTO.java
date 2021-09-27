@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 public class AnalysisDTO {
-    private AnalysisType type;
+    private Long leaderid;
     private AnalysisBefore before;
     private AnalysisAfter after;
 
