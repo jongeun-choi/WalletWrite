@@ -1,6 +1,8 @@
 package com.clonecoin.walletwrite.adaptor;
 
 import com.clonecoin.walletwrite.config.KafkaProperties;
+import com.clonecoin.walletwrite.domain.event.AnalysisDTO;
+import com.clonecoin.walletwrite.domain.event.AnalysisFactor.AnalysisType;
 import com.clonecoin.walletwrite.domain.event.TestDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -51,11 +53,19 @@ public class WalletWriteConsumer {
                             ConsumerRecords<String, String> records = kafkaConsumer.poll(Duration.ofSeconds(3));
                             for(ConsumerRecord<String, String> record: records) {
                                 log.info("Consumed message in {} : {}", TOPIC, record.value());
-                                System.out.println("\n\n\nConsumer 도착쓰 : "+record.value()+"\n\n\n");
+                                System.out.println("\nConsumer 도착쓰 : \n"+record.value()+"\n");
                                 ObjectMapper objectMapper = new ObjectMapper();
 
-                                TestDTO testDTO = objectMapper.readValue(record.value(), TestDTO.class);
-                                System.out.println(testDTO.toString());
+                                AnalysisDTO analysisDTO = objectMapper.readValue(record.value(), AnalysisDTO.class);
+
+                                if(analysisDTO.getType()==AnalysisType.buying){
+                                    System.out.println(" \n도착 : Buying !!!");
+                                }
+
+                                if(analysisDTO.getType()==AnalysisType.selling){
+                                    System.out.println(" \n도착 : Selling !!!");
+                                }
+
 
                                 // 사용방법
                                 //UserIdCreated userIdCreated = objectMapper.readValue(record.value(), UserIdCreated.class);

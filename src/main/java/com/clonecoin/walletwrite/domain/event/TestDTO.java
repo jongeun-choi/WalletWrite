@@ -1,7 +1,11 @@
 package com.clonecoin.walletwrite.domain.event;
 
+import lombok.Data;
+import lombok.Getter;
+
 import java.util.Objects;
 
+@Getter
 public class TestDTO {
     private Long userId;
 
@@ -11,6 +15,7 @@ public class TestDTO {
     public TestDTO(Long userId){
         this.userId = userId;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -25,8 +30,4 @@ public class TestDTO {
         return Objects.hash(userId);
     }
 
-    @Override
-    public String toString() {
-        return userId+" , ";
-    }
 }
