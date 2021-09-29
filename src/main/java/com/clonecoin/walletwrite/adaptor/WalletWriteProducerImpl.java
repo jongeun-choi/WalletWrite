@@ -13,7 +13,7 @@ public class WalletWriteProducerImpl implements WalletWriteProducer {
 
     private final Logger log = LoggerFactory.getLogger(WalletWriteProducerImpl.class);
 
-    private static final String TOPIC_WALLETREAD = "topic_walletread";
+    private static final String TOPIC_WALLETREAD = "topic_walletRead";
 
     private final KafkaProperties kafkaProperties;
 
@@ -32,6 +32,9 @@ public class WalletWriteProducerImpl implements WalletWriteProducer {
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
         log.info("Kafka producer initialized");
     }
+
+    // 1일 기준 수익률 walletRead 서버로 전송
+    //public void sendToWalletRead()
 
     @PreDestroy
     public void shutdown() {

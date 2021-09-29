@@ -25,6 +25,7 @@ public class WalletResource {
 
     private final TickerOpenApiClient tickerOpenApiClient;
 
+
     @PostMapping("/wallet")
     public ResponseEntity<WalletDTO> createWallet(@RequestBody WalletDTO walletDTO) {
         walletService.createWallet(walletDTO);

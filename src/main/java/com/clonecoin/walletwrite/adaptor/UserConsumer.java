@@ -2,6 +2,7 @@ package com.clonecoin.walletwrite.adaptor;
 
 import com.clonecoin.walletwrite.config.KafkaProperties;
 import com.clonecoin.walletwrite.domain.event.AnalysisDTO;
+import com.clonecoin.walletwrite.domain.event.WalletDTO;
 import com.clonecoin.walletwrite.service.Impl.WalletServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -21,12 +22,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
-public class WalletWriteConsumer {
-    private final Logger log = LoggerFactory.getLogger(WalletWriteConsumer.class);
+public class UserConsumer {
+    private final Logger log = LoggerFactory.getLogger(UserConsumer.class);
 
     private final AtomicBoolean closed = new AtomicBoolean(false);
 
-    public static final String TOPIC = "topic_analysis";
+    public static final String TOPIC_USER = "topic_user";
 
     private final KafkaProperties kafkaProperties;
 
@@ -34,7 +35,7 @@ public class WalletWriteConsumer {
 
     private ExecutorService executorService = Executors.newCachedThreadPool();
 
-    public WalletWriteConsumer(KafkaProperties kafkaProperties) {
+    public UserConsumer(KafkaProperties kafkaProperties) {
         this.kafkaProperties = kafkaProperties;
     }
 
@@ -48,7 +49,7 @@ public class WalletWriteConsumer {
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
 
         // subscribe 할 토픽명을 지정
-        kafkaConsumer.subscribe(Collections.singleton(TOPIC));
+        kafkaConsumer.subscribe(Collections.singleton(TOPIC_USER)); // user 서버 구독
 
         log.info("Kafka consumer started");
 
@@ -58,12 +59,13 @@ public class WalletWriteConsumer {
                         while (!closed.get()){
                             ConsumerRecords<String, String> records = kafkaConsumer.poll(Duration.ofSeconds(3));
                             for(ConsumerRecord<String, String> record: records) {
-                                log.info("\n\nConsumed message in {} : {}", TOPIC, record.value());
+                                log.info("\n\nConsumer Message Arrive");
+
                                 ObjectMapper objectMapper = new ObjectMapper();
 
-                                AnalysisDTO analysisDTO = objectMapper.readValue(record.value(), AnalysisDTO.class);
-
-                                walletService.updateInvestment(analysisDTO); // 매수, 매도로 변경된 총투자금액을 갱신
+                                    log.info("\n\nConsumed message in {} : {}", TOPIC_USER, record.value());
+                                    WalletDTO walletDTO = objectMapper.readValue(record.value(), WalletDTO.class);
+                                    walletService.createWallet(walletDTO);
 
 
                             }

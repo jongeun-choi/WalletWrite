@@ -7,11 +7,11 @@ import java.util.List;
 
 @Getter
 public class LeadersId {
-    private Long leaderid;
+    private Long leaderId;
     private List<LeadersCoins> coins = new ArrayList<>();
 
-    public LeadersId(long leaderid, List<LeadersCoins> coins) {
-        this.leaderid = leaderid;
+    public LeadersId(long leaderId, List<LeadersCoins> coins) {
+        this.leaderId = leaderId;
         this.coins = coins;
     }
 }

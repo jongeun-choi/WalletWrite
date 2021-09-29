@@ -1,5 +1,6 @@
 package com.clonecoin.walletwrite.service.Impl;
 
+import com.clonecoin.walletwrite.domain.Profit;
 import com.clonecoin.walletwrite.domain.Wallet;
 import com.clonecoin.walletwrite.domain.event.LeadersDTO;
 import com.clonecoin.walletwrite.domain.event.TestDTO;
@@ -25,6 +26,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -156,11 +158,11 @@ class WalletServiceImplTest {
 
         wallet.updateDayProfit(-123);
         wallet.updateDayProfit(34.567);
+
         walletRepository.save(wallet);
 
         Wallet res = walletRepository.findByUserId(1L).get();
         System.out.println(wallet.toString());
         wallet.getProfits().stream().forEach(profit -> System.out.println(profit.getProfit()+" , "+profit.getLocalDate()));
-
     }
 }

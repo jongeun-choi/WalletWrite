@@ -34,6 +34,8 @@ public class Profit {
 
     public Profit createProfit(double totalProfitRatio) {
         this.profit = totalProfitRatio;
+        LocalDate date = LocalDate.now();
+        this.localDate=date;
         return this;
     }
 }

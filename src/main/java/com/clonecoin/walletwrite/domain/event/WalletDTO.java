@@ -6,6 +6,5 @@ import lombok.Getter;
 public class WalletDTO {
 
     private Long userId;
-    private Double investment;
 
 }
