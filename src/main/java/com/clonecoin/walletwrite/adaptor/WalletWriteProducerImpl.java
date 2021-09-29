@@ -1,13 +1,17 @@
 package com.clonecoin.walletwrite.adaptor;
 
 import com.clonecoin.walletwrite.config.KafkaProperties;
+import com.clonecoin.walletwrite.domain.event.WalletDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.concurrent.ExecutionException;
 
 public class WalletWriteProducerImpl implements WalletWriteProducer {
 
@@ -34,7 +38,10 @@ public class WalletWriteProducerImpl implements WalletWriteProducer {
     }
 
     // 1일 기준 수익률 walletRead 서버로 전송
-    //public void sendToWalletRead()
+    public void sendToWalletRead(WalletDTO walletDTO) throws ExecutionException, InterruptedException, JsonProcessingException {
+        String message = objectMapper.writeValueAsString(walletDTO);
+        producer.send(new ProducerRecord<>(TOPIC_WALLETREAD, message));
+    }
 
     @PreDestroy
     public void shutdown() {

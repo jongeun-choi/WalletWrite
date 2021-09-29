@@ -4,6 +4,7 @@ import com.clonecoin.walletwrite.config.KafkaProperties;
 import com.clonecoin.walletwrite.domain.event.AnalysisDTO;
 import com.clonecoin.walletwrite.domain.event.WalletDTO;
 import com.clonecoin.walletwrite.service.Impl.WalletServiceImpl;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -64,6 +65,7 @@ public class UserConsumer {
                                 ObjectMapper objectMapper = new ObjectMapper();
 
                                     log.info("\n\nConsumed message in {} : {}", TOPIC_USER, record.value());
+                                    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                                     WalletDTO walletDTO = objectMapper.readValue(record.value(), WalletDTO.class);
                                     walletService.createWallet(walletDTO);
 

@@ -2,9 +2,7 @@ package com.clonecoin.walletwrite.service.Impl;
 
 import com.clonecoin.walletwrite.domain.Profit;
 import com.clonecoin.walletwrite.domain.Wallet;
-import com.clonecoin.walletwrite.domain.event.LeadersDTO;
-import com.clonecoin.walletwrite.domain.event.TestDTO;
-import com.clonecoin.walletwrite.domain.event.TickerCoinDTO;
+import com.clonecoin.walletwrite.domain.event.*;
 import com.clonecoin.walletwrite.domain.event.dtofactor.AnalysisCoins;
 import com.clonecoin.walletwrite.domain.event.dtofactor.LeadersCoins;
 import com.clonecoin.walletwrite.domain.event.dtofactor.LeadersId;
@@ -20,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -158,11 +157,30 @@ class WalletServiceImplTest {
 
         wallet.updateDayProfit(-123);
         wallet.updateDayProfit(34.567);
+        wallet.updateDayProfit(-15.3);
 
         walletRepository.save(wallet);
 
         Wallet res = walletRepository.findByUserId(1L).get();
-        System.out.println(wallet.toString());
-        wallet.getProfits().stream().forEach(profit -> System.out.println(profit.getProfit()+" , "+profit.getLocalDate()));
+        System.out.println("\n\nres : "+res.toString());
+
+
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        WalletDTO walletDTO = new WalletDTO();
+        walletDTO.setUserId(res.getUserId());
+        walletDTO.setInvestment(res.getInvestment());
+        walletDTO.setProfitsDto(res.getProfits());
+        /*
+        modelMapper.map(res, walletDTO);
+        res.getProfits().stream().forEach(profit -> walletDTO.setProfits(profit));
+        modelMapper.map(res.getProfits(), walletDTO.getProfitsDto());
+
+         */
+
+        System.out.println("WalletDTO : "+walletDTO.getUserId()+" , "+walletDTO.getInvestment());
+        walletDTO.getProfitsDto().stream().forEach(profitDTO -> System.out.println("DTO : "+profitDTO.getProfit()+" , "+profitDTO.getLocalDate()));
+
+        res.getProfits().stream().forEach(profit -> System.out.println("original : "+profit.getProfit()+" , "+profit.getLocalDate()));
     }
 }

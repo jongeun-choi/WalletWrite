@@ -1,5 +1,6 @@
 package com.clonecoin.walletwrite.service.Impl;
 
+import com.clonecoin.walletwrite.adaptor.WalletWriteProducerImpl;
 import com.clonecoin.walletwrite.domain.Wallet;
 import com.clonecoin.walletwrite.domain.event.AnalysisDTO;
 import com.clonecoin.walletwrite.domain.event.LeadersDTO;
@@ -10,6 +11,8 @@ import com.clonecoin.walletwrite.repository.WalletRepository;
 import com.clonecoin.walletwrite.rest.feign.LeadersApiClient;
 import com.clonecoin.walletwrite.rest.feign.TickerOpenApiClient;
 import com.clonecoin.walletwrite.service.WalletService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @RequiredArgsConstructor
@@ -30,9 +34,10 @@ public class WalletServiceImpl implements WalletService {
     private final WalletRepository walletRepository;
     private final TickerOpenApiClient tickerOpenApiClient;
     private final LeadersApiClient leadersApiClient;
+    private final WalletWriteProducerImpl walletWriteProducer;
+    private final ModelMapper modelMapper;
 
     public Wallet save(WalletDTO walletDTO) {
-        ModelMapper modelMapper = new ModelMapper();
         Wallet wallet = new Wallet();
         modelMapper.map(walletDTO,wallet);
         return walletRepository.save(wallet);
@@ -87,7 +92,7 @@ public class WalletServiceImpl implements WalletService {
     // 00시에 리더들 정보 갱신
     @Scheduled(cron = "0 0 0 ? * *") // 매일 00시 00분에 요청
     @Transactional
-    public void updateDayProfit() {
+    public void updateDayProfit(){
         
         ModelMapper modelMapper = new ModelMapper();
 
@@ -118,8 +123,22 @@ public class WalletServiceImpl implements WalletService {
                     double totalProfitRatio = perCoinsRatio.stream().mapToDouble(ratio -> ratio[0] * ratio[1]).sum();
                     totalProfitRatio = Math.round(totalProfitRatio * 1000) / 1000.0; // 전체 수익률, 소수점 3자리까지
 
-                    wallet.updateDayProfit(totalProfitRatio);
+                    wallet.updateDayProfit(totalProfitRatio); // wallet에 수익률 저장
 
+                    WalletDTO walletDTO = new WalletDTO(); // walletRead로 보내줄 walletDTO
+                    walletDTO.setUserId(wallet.getUserId());
+                    walletDTO.setInvestment(wallet.getInvestment());
+                    walletDTO.setProfitsDto(wallet.getProfits());
+
+                    try {
+                        walletWriteProducer.sendToWalletRead(walletDTO);
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
 
                     // 업데이트된 리더 1일 기준 수익률을 계산이 되면 바로바로 walletRead 로 전송
                     // Kafka 을 이용
