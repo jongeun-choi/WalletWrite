@@ -1,6 +1,6 @@
 server:
   port: 0 # Random Port : 0
-  eurekaport: 8761 
+  eurekaport: 8761
 
 spring:
   application:
@@ -51,3 +51,31 @@ kafka:
   producer:
     key.serializer: org.apache.kafka.common.serialization.StringSerializer
     value.serializer: org.apache.kafka.common.serialization.StringSerializer
+
+
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

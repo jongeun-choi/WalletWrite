@@ -2,6 +2,7 @@ package com.clonecoin.walletwrite.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.tomcat.jni.Local;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -17,7 +18,7 @@ public class Profit {
     private Long id;
 
     @Column(name = "profit")
-    private Long profit;
+    private Double profit;
 
     @Column(name = "registerDate")
     private LocalDate localDate;
@@ -25,4 +26,14 @@ public class Profit {
     @ManyToOne
     @JoinColumn(name = "userId")
     private Wallet wallet;
+
+    @Override
+    public String toString(){
+        return "id : " + id + " , profit : " + profit + " localDate : " + localDate;
+    }
+
+    public Profit createProfit(double totalProfitRatio) {
+        this.profit = totalProfitRatio;
+        return this;
+    }
 }

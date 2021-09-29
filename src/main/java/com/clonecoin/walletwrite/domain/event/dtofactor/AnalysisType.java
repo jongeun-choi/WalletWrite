@@ -1,4 +1,4 @@
-package com.clonecoin.walletwrite.domain.event.AnalysisFactor;
+package com.clonecoin.walletwrite.domain.event.dtofactor;
 
 import lombok.Getter;
 

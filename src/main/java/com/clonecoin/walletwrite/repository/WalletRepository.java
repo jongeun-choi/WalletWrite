@@ -11,5 +11,6 @@ public interface WalletRepository extends JpaRepository<Wallet, Long> {
 
 
     Optional<Wallet> findById(Long id); // 리더 지갑 객체 불러오기
+    Optional<Wallet> findByUserId(Long id); // 리더 지갑 객체 불러오기
 
 }

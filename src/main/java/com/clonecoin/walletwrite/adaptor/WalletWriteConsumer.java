@@ -2,8 +2,7 @@ package com.clonecoin.walletwrite.adaptor;
 
 import com.clonecoin.walletwrite.config.KafkaProperties;
 import com.clonecoin.walletwrite.domain.event.AnalysisDTO;
-import com.clonecoin.walletwrite.domain.event.AnalysisFactor.AnalysisType;
-import com.clonecoin.walletwrite.domain.event.TestDTO;
+import com.clonecoin.walletwrite.service.Impl.WalletServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -11,6 +10,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -38,12 +38,18 @@ public class WalletWriteConsumer {
         this.kafkaProperties = kafkaProperties;
     }
 
+    @Autowired
+    private WalletServiceImpl walletService;
+
     @PostConstruct
     public void start(){
         log.info("Kafka consumer starting ...");
         this.kafkaConsumer = new KafkaConsumer<>(kafkaProperties.getConsumerProps());
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+
+        // subscribe 할 토픽명을 지정
         kafkaConsumer.subscribe(Collections.singleton(TOPIC));
+
         log.info("Kafka consumer started");
 
         executorService.execute(()-> {
@@ -52,16 +58,14 @@ public class WalletWriteConsumer {
                         while (!closed.get()){
                             ConsumerRecords<String, String> records = kafkaConsumer.poll(Duration.ofSeconds(3));
                             for(ConsumerRecord<String, String> record: records) {
-                                log.info("Consumed message in {} : {}", TOPIC, record.value());
-                                System.out.println("\nConsumer 도착쓰 : \n"+record.value()+"\n");
+                                log.info("\n\nConsumed message in {} : {}", TOPIC, record.value());
                                 ObjectMapper objectMapper = new ObjectMapper();
 
                                 AnalysisDTO analysisDTO = objectMapper.readValue(record.value(), AnalysisDTO.class);
 
+                                walletService.updateInvestment(analysisDTO); // 매수, 매도로 변경된 총투자금액을 갱신
 
-                                // 사용방법
-                                //UserIdCreated userIdCreated = objectMapper.readValue(record.value(), UserIdCreated.class);
-                                //Portfolios portfolio = portfolioService.createPortfolio(userIdCreated);
+
                             }
                         }
                         kafkaConsumer.commitSync();

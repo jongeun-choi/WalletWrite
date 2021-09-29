@@ -1,5 +1,6 @@
 package com.clonecoin.walletwrite.domain;
 
+import com.clonecoin.walletwrite.domain.event.LeadersDTO;
 import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,12 +25,12 @@ public class Wallet {
     private Long userId;
 
     @Column(name = "investment")
-    private Long investment;
+    private Double investment;
 
 
     // walletWrite(부모) Entity가 사라지면 profitWrite(자식) Entity도 사라진다.
     // profitWrite가 null이 되는 객체가 있다면 연관관계에서 delete한다.
-    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Profit> profits=new ArrayList<>();
 
 
@@ -46,16 +47,18 @@ public class Wallet {
         return this;
     }
 
-    public Wallet updateInvestment(Long investment) {
+    public Wallet updateInvestment(Double investment) {
         this.investment = investment;
         return this;
     }
 
-    /*
-    public Wallet updateDayProfit(){
-        this.profits.add();
-    }
 
-     */
+    public Wallet updateDayProfit(double totalProfitRatio){
+        Profit profit = new Profit();
+        profit.createProfit(totalProfitRatio);
+        this.profits.add(profit);
+        profit.setWallet(this);
+        return this;
+    }
 
 }
