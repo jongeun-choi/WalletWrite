@@ -1,31 +1,20 @@
 package com.clonecoin.walletwrite.service.Impl;
 
-import com.clonecoin.walletwrite.domain.Profit;
 import com.clonecoin.walletwrite.domain.Wallet;
 import com.clonecoin.walletwrite.domain.event.*;
-import com.clonecoin.walletwrite.domain.event.dtofactor.AnalysisCoins;
-import com.clonecoin.walletwrite.domain.event.dtofactor.LeadersCoins;
-import com.clonecoin.walletwrite.domain.event.dtofactor.LeadersId;
+import com.clonecoin.walletwrite.domain.event.dtofactor.AnalysisDtoFactor.AnalysisCoins;
+import com.clonecoin.walletwrite.domain.event.dtofactor.LeadersDtoFactor.LeadersCoins;
+import com.clonecoin.walletwrite.domain.event.dtofactor.LeadersDtoFactor.LeadersId;
 import com.clonecoin.walletwrite.repository.WalletRepository;
-import com.clonecoin.walletwrite.rest.feign.LeadersApiClient;
-import com.clonecoin.walletwrite.rest.feign.TickerOpenApiClient;
-import com.clonecoin.walletwrite.service.WalletService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.netflix.discovery.converters.Auto;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -164,23 +153,31 @@ class WalletServiceImplTest {
         Wallet res = walletRepository.findByUserId(1L).get();
         System.out.println("\n\nres : "+res.toString());
 
+        List<ProfitDTO> profitDTOList = new ArrayList<>();
+        res.getProfits().stream().forEach(profit -> {
+            ProfitDTO profitDTO = modelMapper.map(profit, ProfitDTO.class);
+            profitDTOList.add(profitDTO);
+        });
 
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        WalletDTO walletDTO = new WalletDTO();
+        /*
+        WalletDTO walletDTO = new WalletDTO(res.getUserId(),res.getInvestment(),profitDTOList);
+
+
         walletDTO.setUserId(res.getUserId());
         walletDTO.setInvestment(res.getInvestment());
         walletDTO.setProfitsDto(res.getProfits());
-        /*
+
+
+
         modelMapper.map(res, walletDTO);
         res.getProfits().stream().forEach(profit -> walletDTO.setProfits(profit));
         modelMapper.map(res.getProfits(), walletDTO.getProfitsDto());
 
-         */
 
         System.out.println("WalletDTO : "+walletDTO.getUserId()+" , "+walletDTO.getInvestment());
         walletDTO.getProfitsDto().stream().forEach(profitDTO -> System.out.println("DTO : "+profitDTO.getProfit()+" , "+profitDTO.getLocalDate()));
 
         res.getProfits().stream().forEach(profit -> System.out.println("original : "+profit.getProfit()+" , "+profit.getLocalDate()));
+        */
     }
 }

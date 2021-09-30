@@ -21,10 +21,16 @@ public class WalletDTO {
     @JsonProperty("investment")
     private Double investment;
 
-    private List<Profit> profitsDto = new ArrayList<>();
+    private ProfitDTO profitDto;
 
     public WalletDTO() {
 
+    }
+
+    public WalletDTO(long userId, double investment, ProfitDTO profitDto) {
+        this.userId = userId;
+        this.investment = investment;
+        this.profitDto = profitDto;
     }
 
     /*

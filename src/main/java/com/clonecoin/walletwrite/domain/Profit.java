@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "profitWrite")
 @Getter
-@Setter
 public class Profit {
 
     @Id
@@ -36,6 +35,11 @@ public class Profit {
         this.profit = totalProfitRatio;
         LocalDate date = LocalDate.now();
         this.localDate=date;
+        return this;
+    }
+
+    public Profit setWallet(Wallet wallet) {
+        this.wallet = wallet;
         return this;
     }
 }

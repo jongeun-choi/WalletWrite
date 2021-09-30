@@ -1,6 +1,6 @@
 package com.clonecoin.walletwrite.domain.event;
 
-import com.clonecoin.walletwrite.domain.event.dtofactor.TickerData;
+import com.clonecoin.walletwrite.domain.event.dtofactor.TickerDtoFactor.TickerData;
 import lombok.Getter;
 
 @Getter
