@@ -1,7 +1,7 @@
 package com.clonecoin.walletwrite.domain.event;
 
-import com.clonecoin.walletwrite.domain.event.dtofactor.AnalysisAfter;
-import com.clonecoin.walletwrite.domain.event.dtofactor.AnalysisBefore;
+import com.clonecoin.walletwrite.domain.event.dtofactor.AnalysisDtoFactor.AnalysisAfter;
+import com.clonecoin.walletwrite.domain.event.dtofactor.AnalysisDtoFactor.AnalysisBefore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 

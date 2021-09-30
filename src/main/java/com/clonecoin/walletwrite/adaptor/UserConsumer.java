@@ -4,6 +4,7 @@ import com.clonecoin.walletwrite.config.KafkaProperties;
 import com.clonecoin.walletwrite.domain.event.AnalysisDTO;
 import com.clonecoin.walletwrite.domain.event.WalletDTO;
 import com.clonecoin.walletwrite.service.Impl.WalletServiceImpl;
+import com.clonecoin.walletwrite.service.WalletService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -41,7 +42,7 @@ public class UserConsumer {
     }
 
     @Autowired
-    private WalletServiceImpl walletService;
+    private WalletService walletService;
 
     @PostConstruct
     public void start(){

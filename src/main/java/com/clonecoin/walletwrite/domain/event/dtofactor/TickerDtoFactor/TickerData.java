@@ -1,4 +1,4 @@
-package com.clonecoin.walletwrite.domain.event.dtofactor;
+package com.clonecoin.walletwrite.domain.event.dtofactor.TickerDtoFactor;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

@@ -10,7 +10,7 @@ import java.util.Optional;
 @Service
 public interface WalletService {
 
-    public Wallet save(WalletDTO walletDTO);
+    //public Wallet save(WalletDTO walletDTO);
 
     public void createWallet(WalletDTO walletDTO);
 

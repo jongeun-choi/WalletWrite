@@ -32,6 +32,12 @@ public class WalletResource {
         return ResponseEntity.ok().body(walletDTO);
     }
 
+    //updateDayProfit 테스트 용도
+    @GetMapping("/wallet")
+    public void updateDayProfit() {
+        walletService.updateDayProfit();
+    }
+
 
     /*
     @GetMapping("/feign")
