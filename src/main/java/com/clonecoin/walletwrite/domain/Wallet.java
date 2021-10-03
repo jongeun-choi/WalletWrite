@@ -1,17 +1,14 @@
 package com.clonecoin.walletwrite.domain;
 
-import com.clonecoin.walletwrite.domain.event.LeadersDTO;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.sun.istack.NotNull;
 import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "walletWrite")
@@ -25,11 +22,12 @@ public class Wallet {
     private Long id;
 
     @NotNull
-    @Column(name = "userId")
+    @Column(name = "leaderId")
     private Long userId;
 
-    @Column(name = "investment")
-    private Double investment;
+    @NotNull
+    @Column(name = "leaderName")
+    private String userName;
 
 
     // walletWrite(부모) Entity가 사라지면 profitWrite(자식) Entity도 사라진다.
@@ -43,24 +41,19 @@ public class Wallet {
 
     @Override
     public String toString() {
-        return "id= " + id + ", userId= " + userId + ", investment= " + investment;
+        return "id= " + id + ", userId= " + userId+" , userName : "+userName;
     }
 
 
-    public Wallet createWallet(Long userId) {
+    public Wallet createWallet(Long userId,String userName) {
         this.userId = userId;
+        this.userName = userName;
         return this;
     }
 
-    public Wallet updateInvestment(Double investment) {
-        this.investment = investment;
-        return this;
-    }
-
-
-    public Profit updateDayProfit(double totalProfitRatio) {
+    public Profit updateDayProfit(double totalProfitRatio,double investment) {
         Profit profit = new Profit();
-        profit.createProfit(totalProfitRatio);
+        profit.createProfit(totalProfitRatio,investment);
         this.profits.add(profit);
         profit.setWallet(this);
         return profit;

@@ -52,7 +52,7 @@ public class WalletServiceImpl implements WalletService {
         }
 
         Wallet wallet = new Wallet();
-        wallet.createWallet(walletDTO.getUserId());
+        wallet.createWallet(walletDTO.getUserId(), walletDTO.getUserName());
 
         walletRepository.save(wallet);
         System.out.println("\n"+wallet.toString());
@@ -73,6 +73,7 @@ public class WalletServiceImpl implements WalletService {
     }
 
     // 총 투자금액 갱신
+    /*
     @Transactional
     public Wallet updateInvestment(AnalysisDTO analysisDTO) { 
 
@@ -85,6 +86,8 @@ public class WalletServiceImpl implements WalletService {
         return wallet;
     }
 
+     */
+
 
     // 통합할때 시헌이 형이랑 이부분 맞춰보기
     // 00시에 리더들 정보 갱신
@@ -92,12 +95,12 @@ public class WalletServiceImpl implements WalletService {
     @Transactional
     public void updateDayProfit(){
 
-        
-        LeadersCoins l1 = new LeadersCoins("LTC",5000,3.3);
+        //----- 테스트 -------
+        LeadersCoins l1 = new LeadersCoins("LTC",185800,3.3);
         LeadersCoins l2 = new LeadersCoins("ETH",3000,2.3);
 
         LeadersCoins l3 = new LeadersCoins("LTC",4000,3.3);
-        LeadersCoins l4 = new LeadersCoins("ETH",2000,2.3);
+        LeadersCoins l4 = new LeadersCoins("ETH",3637000,2.3);
 
         List<LeadersCoins> list1 = new ArrayList<>();
         List<LeadersCoins> list2 = new ArrayList<>();
@@ -112,15 +115,15 @@ public class WalletServiceImpl implements WalletService {
 
         Wallet wallet1 = new Wallet();
         Wallet wallet2 = new Wallet();
-        wallet1.createWallet(1L);
-        wallet2.createWallet(2L);
+        wallet1.createWallet(1L,"jong");
+        wallet2.createWallet(2L,"eun");
 
         List<LeadersId> leadersIdList = new ArrayList<>();
         leadersIdList.add(leadersId1);
         leadersIdList.add(leadersId2);
 
         LeadersDTO leadersDTO = new LeadersDTO(leadersIdList);
-         
+        //----- 테스트 -------
 
         ModelMapper modelMapper = new ModelMapper();
 
@@ -139,7 +142,9 @@ public class WalletServiceImpl implements WalletService {
                     List<Double[]> perCoinsRatio = new ArrayList<Double[]>(); // {수익률, 보유비중}
 
                     double UpdatedInvestment = leadersId.getCoins().stream().mapToDouble(coins -> coins.getCoinQuantity() * coins.getAvgPrice()).sum(); // 로직 계산이 시작될 시점의 investment
+                    UpdatedInvestment = Math.round(UpdatedInvestment * 1000) / 1000.0;
 
+                    double finalUpdatedInvestment = UpdatedInvestment;
                     leadersId.getCoins().stream() // 코인별 수익률 계산
                             .forEach(coins -> {
                                 String str = coins.getCoinName() + "_KRW";
@@ -150,7 +155,7 @@ public class WalletServiceImpl implements WalletService {
                                 double opening_price = Double.parseDouble(tickerCoinDTO.getData().getOpening_price()); // 전날 종가 = 오늘의 시가
                                 double profitRatio = (opening_price / coins.getAvgPrice() - 1) * 100; // 해당 코인 수익률
                                 double coinInvestment = coins.getAvgPrice() * coins.getCoinQuantity(); // 해당 코인 투자 금액
-                                double coinHoldingRatio = coinInvestment / UpdatedInvestment; // 해당 코인 보유비중
+                                double coinHoldingRatio = coinInvestment / finalUpdatedInvestment; // 해당 코인 보유비중
                                 System.out.println("\n\nopening_price : "+opening_price);
                                 System.out.println("\n\nprofitRatio : "+profitRatio);
                                 System.out.println("\n\ncoinInvestment : "+coinInvestment);
@@ -162,13 +167,12 @@ public class WalletServiceImpl implements WalletService {
                     double totalProfitRatio = perCoinsRatio.stream().mapToDouble(ratio -> ratio[0] * ratio[1]).sum();
                     totalProfitRatio = Math.round(totalProfitRatio * 1000) / 1000.0; // 전체 수익률, 소수점 3자리까지
 
-                    wallet.updateInvestment(UpdatedInvestment);
-                    Profit profit = wallet.updateDayProfit(totalProfitRatio); // wallet에 수익률 저장
+                    Profit profit = wallet.updateDayProfit(totalProfitRatio,finalUpdatedInvestment); // wallet에 수익률 저장
 
                     ProfitDTO profitDTO = modelMapper.map(profit, ProfitDTO.class);
 
                     System.out.println(" profit 저장 완료");
-                    WalletDTO walletDTO = new WalletDTO(wallet.getUserId(),UpdatedInvestment,profitDTO); // walletRead로 보내줄 walletDTO
+                    WalletDTO walletDTO = new WalletDTO(wallet.getUserId(), wallet.getUserName(), profitDTO); // walletRead로 보내줄 walletDTO
 
                     try {
                         walletWriteProducer.sendToWalletRead(walletDTO);

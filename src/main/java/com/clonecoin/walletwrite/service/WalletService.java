@@ -16,7 +16,7 @@ public interface WalletService {
 
     public Wallet findWallet(Long userId);
 
-    public Wallet updateInvestment(AnalysisDTO analysisDTO);
+    //public Wallet updateInvestment(AnalysisDTO analysisDTO);
 
     public void updateDayProfit();
 
