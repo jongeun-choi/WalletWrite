@@ -1,8 +1,6 @@
 package com.clonecoin.walletwrite.domain;
 
 import lombok.Getter;
-import lombok.Setter;
-import org.apache.tomcat.jni.Local;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -19,20 +17,24 @@ public class Profit {
     @Column(name = "profit")
     private Double profit;
 
+    @Column(name = "investment")
+    private Double investment;
+
     @Column(name = "registerDate")
     private LocalDate localDate;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "walletId")
     private Wallet wallet;
 
     @Override
     public String toString(){
-        return "id : " + id + " , profit : " + profit + " localDate : " + localDate;
+        return "id : " + id + " , profit : " + +profit + " , investment : "+investment+" localDate : " + localDate;
     }
 
-    public Profit createProfit(double totalProfitRatio) {
+    public Profit createProfit(double totalProfitRatio, double investment) {
         this.profit = totalProfitRatio;
+        this.investment = investment;
         LocalDate date = LocalDate.now();
         this.localDate=date;
         return this;

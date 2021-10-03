@@ -50,20 +50,21 @@ class WalletServiceImplTest {
     @Test
     void createWallet() {
         Wallet wallet = new Wallet();
-        wallet.createWallet(1L);
+        wallet.createWallet(1L,"jong");
         assertThat(wallet.getUserId(), is(1L));
     }
 
     @Test
     void findWallet(long l) {
         Wallet wallet = new Wallet();
-        wallet.createWallet(1L);
+        wallet.createWallet(1L,"eun");
         walletRepository.save(wallet);
 
         Optional<Wallet> res = walletRepository.findByUserId(1L);
         assertThat(res.get().getUserId(),is(1L));
     }
 
+    /*
     @Test
     void updateInvestment() {
         Wallet wallet = new Wallet();
@@ -88,6 +89,8 @@ class WalletServiceImplTest {
         assertThat(result.get().getInvestment(),is(1700.0));
     }
 
+     */
+
     @Test
     void updateDayProfit() {
         LeadersCoins l1 = new LeadersCoins("BTC",5000,3.3);
@@ -109,8 +112,8 @@ class WalletServiceImplTest {
 
         Wallet wallet1 = new Wallet();
         Wallet wallet2 = new Wallet();
-        wallet1.createWallet(1L);
-        wallet2.createWallet(2L);
+        wallet1.createWallet(1L,"jong");
+        wallet2.createWallet(2L,"eun");
 
         List<LeadersId> leadersIdList = new ArrayList<>();
         leadersIdList.add(leadersId1);
@@ -126,8 +129,8 @@ class WalletServiceImplTest {
         totalProfitRatio=Math.round(totalProfitRatio*1000)/1000.0;
         System.out.println("\ntotalProfitRatio : "+totalProfitRatio);
 
-        wallet1.updateDayProfit(totalProfitRatio);
-        wallet1.updateDayProfit(153215.123);
+        wallet1.updateDayProfit(totalProfitRatio,35245);
+        wallet1.updateDayProfit(153215.123,35245);
 
         wallet1.getProfits().stream().forEach(profit->System.out.println("profit : "+profit.toString()));
 
@@ -141,12 +144,12 @@ class WalletServiceImplTest {
     @Test
     void walletAndprofit(){
         Wallet wallet = new Wallet();
-        wallet.createWallet(1L);
-        wallet.updateInvestment(23.23);
+        wallet.createWallet(1L,"jong");
+        //wallet.updateInvestment(23.23);
 
-        wallet.updateDayProfit(-123);
-        wallet.updateDayProfit(34.567);
-        wallet.updateDayProfit(-15.3);
+        wallet.updateDayProfit(-123,35);
+        wallet.updateDayProfit(34.567,52);
+        wallet.updateDayProfit(-15.3,26);
 
         walletRepository.save(wallet);
 

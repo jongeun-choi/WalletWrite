@@ -29,7 +29,7 @@ public class UserConsumer {
 
     private final AtomicBoolean closed = new AtomicBoolean(false);
 
-    public static final String TOPIC_USER = "topic_user";
+    public static final String TOPIC_USER = "user-leader-apply-topic";
 
     private final KafkaProperties kafkaProperties;
 
@@ -66,7 +66,7 @@ public class UserConsumer {
                                 ObjectMapper objectMapper = new ObjectMapper();
 
                                     log.info("\n\nConsumed message in {} : {}", TOPIC_USER, record.value());
-                                    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                                    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // DTO에 매핑되지 않는 Json은 무시
                                     WalletDTO walletDTO = objectMapper.readValue(record.value(), WalletDTO.class);
                                     walletService.createWallet(walletDTO);
 

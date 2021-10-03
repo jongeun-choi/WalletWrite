@@ -15,11 +15,11 @@ import java.util.List;
 @Setter
 public class WalletDTO {
 
-    @JsonProperty("userId")
+    @JsonProperty("leaderId")
     private Long userId;
 
-    @JsonProperty("investment")
-    private Double investment;
+    @JsonProperty("leaderName")
+    private String userName;
 
     private ProfitDTO profitDto;
 
@@ -27,9 +27,8 @@ public class WalletDTO {
 
     }
 
-    public WalletDTO(long userId, double investment, ProfitDTO profitDto) {
+    public WalletDTO(long userId, String userName, ProfitDTO profitDto) {
         this.userId = userId;
-        this.investment = investment;
         this.profitDto = profitDto;
     }
 
