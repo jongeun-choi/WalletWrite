@@ -82,8 +82,8 @@ public class UserConsumer {
                     }catch (Exception e){
                         log.error(e.getMessage(), e);
                     }finally {
-                        log.info("kafka consumer close");
-                        kafkaConsumer.close();
+                        log.info("kafka consumer is not close");
+//                        kafkaConsumer.close();
                     }
                 }
         );
