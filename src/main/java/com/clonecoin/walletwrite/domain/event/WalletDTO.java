@@ -1,6 +1,8 @@
 package com.clonecoin.walletwrite.domain.event;
 
 import com.clonecoin.walletwrite.domain.Profit;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +15,8 @@ import java.util.List;
 
 @Getter
 @Setter
+//@JsonIgnoreProperty(ignoreUnknown = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class WalletDTO {
 
     @JsonProperty("leaderId")
@@ -30,6 +34,7 @@ public class WalletDTO {
 
     public WalletDTO(Long userId, String userName, ProfitDTO profitDto) {
         this.userId = userId;
+        this.userName = userName;
         this.profitDto = profitDto;
     }
 

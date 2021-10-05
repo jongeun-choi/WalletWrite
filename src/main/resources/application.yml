@@ -1,10 +1,10 @@
 server:
-  port: 0 # Random Port : 0
+  port: 8004 # Random Port : 0
   eurekaport: 8761
 
 spring:
   application:
-    name: wallet-write-server
+    name: walletwrite
   h2:
     console:
       enabled: true
