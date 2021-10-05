@@ -29,7 +29,7 @@ public class UserConsumer {
 
     private final AtomicBoolean closed = new AtomicBoolean(false);
 
-    public static final String TOPIC_USER = "user-leader-apply-topic";
+    public static final String TOPIC_USER = "leader-signal";
 
     private final KafkaProperties kafkaProperties;
 

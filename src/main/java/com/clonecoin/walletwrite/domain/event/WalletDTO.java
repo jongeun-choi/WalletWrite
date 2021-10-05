@@ -21,13 +21,14 @@ public class WalletDTO {
     @JsonProperty("leaderName")
     private String userName;
 
+    @JsonProperty("profitDto")
     private ProfitDTO profitDto;
 
     public WalletDTO() {
 
     }
 
-    public WalletDTO(long userId, String userName, ProfitDTO profitDto) {
+    public WalletDTO(Long userId, String userName, ProfitDTO profitDto) {
         this.userId = userId;
         this.profitDto = profitDto;
     }

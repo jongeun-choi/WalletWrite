@@ -27,13 +27,10 @@ import static org.hamcrest.Matchers.is;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest // JPA관련 Component만 로드 된다. 테스트 종료 후 rollback이 되기 때문에 실제 repository에는 저장되지 않는다.
 class WalletServiceImplTest {
-
-    private ModelMapper modelMapper = new ModelMapper();
-
-
     @Autowired
     private WalletRepository walletRepository;
 
+    private ModelMapper modelMapper = new ModelMapper();
 
     @Test
     void save() {
