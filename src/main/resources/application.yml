@@ -1,8 +1,7 @@
-server:
-  port: 8004 # Random Port : 0
-  eurekaport: 8761
-
 spring:
+  config:
+    activate:
+      on-profile: local
   application:
     name: walletwrite
   h2:
@@ -12,10 +11,10 @@ spring:
       settings:
         web-allow-others: true
   datasource:
-    url: jdbc:h2:mem:testdb
-    username : sa
-    password :
     driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
   jpa:
     properties:
       hibernate:
@@ -24,59 +23,79 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
+    defer-datasource-initialization: true
 
-
+server:
+  port: 8004
 
 eureka:
   instance:
-    hostname: localhost
-    instance-id : ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
 
   client:
-    registerWithEureka: true #gateway는 eureka에 등록할필요 없다. gateway는
-    fetchRegistry: true #gateway는 eureka가 찾을 필요 없다
-    serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:${server.eurekaport}/eureka/ # 서버가 가진 위치값
-
-greeting:
-  message: Welcome to the CloneCoin Project.
-
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka # -e
 
 kafka:
   bootstrap-servers: localhost:9092
   consumer:
     key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
     value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    group.id: walletwrite
+    group.id: walletread
     auto.offset.reset: earliest
   producer:
     key.serializer: org.apache.kafka.common.serialization.StringSerializer
     value.serializer: org.apache.kafka.common.serialization.StringSerializer
 
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+---
+# prod 는 eureka defaultZone 을 EC2 publicIP 로 수정해야한다.
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:mysql://clonecoin-walletread-db.crtppt0lvgk7.ap-northeast-2.rds.amazonaws.com:3306/walletread?serverTimezone=UTC&characterEncoding=UTF-8
+    username: clonecoin
+    password: clonecoin
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    defer-datasource-initialization: true
 
 
-feign:
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+    prefer-ip-address: true
+    ip-address: 3.35.164.79 # ec2 specific server public address
+
   client:
-    config:
-      default:
-        connectTimeout: 5000
-        readTimeout: 5000
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://13.125.221.207:8761/eureka # ec2 eureka public address
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+kafka:
+  bootstrap-servers: 13.125.171.36:9092:9092
+  consumer:
+    key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    group.id: walletread
+    auto.offset.reset: earliest
+  producer:
+    key.serializer: org.apache.kafka.common.serialization.StringSerializer
+    value.serializer: org.apache.kafka.common.serialization.StringSerializer

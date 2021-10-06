@@ -32,18 +32,8 @@ public class WalletServiceImpl implements WalletService {
     private final LeadersApiClient leadersApiClient;
     private final WalletWriteProducerImpl walletWriteProducer;
 
-    /*
-    public Wallet save(WalletDTO walletDTO) {
-        ModelMapper modelMapper=new ModelMapper();
-        Wallet wallet = new Wallet();
-        modelMapper.map(walletDTO,wallet);
-        return walletRepository.save(wallet);
-    }
-     */
-
     // Wallet 생성
     public void createWallet(WalletDTO walletDTO){
-
         Optional<Wallet> result = walletRepository.findByUserId(walletDTO.getUserId());
         if (result.isPresent()) {
             // 이미 존재하는 wallet
@@ -72,65 +62,18 @@ public class WalletServiceImpl implements WalletService {
         return wallet.get();
     }
 
-    // 총 투자금액 갱신
-    /*
-    @Transactional
-    public Wallet updateInvestment(AnalysisDTO analysisDTO) { 
 
-        Wallet wallet = findWallet(analysisDTO.getLeaderId());
-
-        double investment = analysisDTO.getAfter().getCoins().stream().mapToDouble(coin -> coin.getCoinQuantity() * coin.getAvgPrice()).sum();
-
-        wallet = wallet.updateInvestment(investment);
-        System.out.println(wallet.getUserId()+" investment update : "+wallet.toString());
-        return wallet;
-    }
-
-     */
-
-
-    // 통합할때 시헌이 형이랑 이부분 맞춰보기
     // 00시에 리더들 정보 갱신
     @Scheduled(cron = "0 0 0 ? * *") // 매일 00시 00분에 요청
     @Transactional
     public void updateDayProfit(){
 
-        //----- 테스트 -------
-        LeadersCoins l1 = new LeadersCoins("LTC",185800,3.3);
-        LeadersCoins l2 = new LeadersCoins("ETH",3000,2.3);
-
-        LeadersCoins l3 = new LeadersCoins("LTC",4000,3.3);
-        LeadersCoins l4 = new LeadersCoins("ETH",3637000,2.3);
-
-        List<LeadersCoins> list1 = new ArrayList<>();
-        List<LeadersCoins> list2 = new ArrayList<>();
-
-        list1.add(l1);
-        list1.add(l2);
-        list2.add(l3);
-        list2.add(l4);
-
-        LeadersId leadersId1 = new LeadersId(1L, list1);
-        LeadersId leadersId2 = new LeadersId(2L, list2);
-
-        Wallet wallet1 = new Wallet();
-        Wallet wallet2 = new Wallet();
-        wallet1.createWallet(1L,"jong");
-        wallet2.createWallet(2L,"eun");
-
-        List<LeadersId> leadersIdList = new ArrayList<>();
-        leadersIdList.add(leadersId1);
-        leadersIdList.add(leadersId2);
-
-        LeadersDTO leadersDTO = new LeadersDTO(leadersIdList);
-        //----- 테스트 -------
-
         ModelMapper modelMapper = new ModelMapper();
 
-        /*
-        // analysis로 leaders 정보 받아오기
+
+        //analysis로 leaders 정보 받아오기
         LeadersDTO leadersDTO = modelMapper.map(leadersApiClient.getLeaders(), LeadersDTO.class);
-         */
+
 
         System.out.println("\n\nupdateDayProfit 시작\n");
 
@@ -175,17 +118,14 @@ public class WalletServiceImpl implements WalletService {
                     WalletDTO walletDTO = new WalletDTO(wallet.getUserId(), wallet.getUserName(), profitDTO); // walletRead로 보내줄 walletDTO
 
                     try {
+                        // 업데이트된 리더 1일 기준 수익률을 계산이 되면 바로바로 walletRead 로 전송
+                        // Kafka 을 이용
                         walletWriteProducer.sendToWalletRead(walletDTO);
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
 
-                    // 업데이트된 리더 1일 기준 수익률을 계산이 되면 바로바로 walletRead 로 전송
-                    // Kafka 을 이용
-                });
 
-        //TickerCoinDTO tickerCoinDTO = modelMapper.map(tickerOpenApiClient.getTickerCoin(str), TickerCoinDTO.class);
-        //System.out.println(tickerCoinDTO.getData().getOpening_price());
-        //TickerDTO tickerDTO = modelMapper.map(tickerOpenApiClient.getTicker(), TickerDTO.class);
+                });
     }
 }
