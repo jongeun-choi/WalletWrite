@@ -63,7 +63,7 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    url: jdbc:mysql://clonecoin-walletread-db.crtppt0lvgk7.ap-northeast-2.rds.amazonaws.com:3306/walletread?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://clonecoin-walletwrite-db.crtppt0lvgk7.ap-northeast-2.rds.amazonaws.com:3306/walletwrite?serverTimezone=UTC&characterEncoding=UTF-8
     username: clonecoin
     password: clonecoin
   jpa:
