@@ -124,8 +124,6 @@ public class WalletServiceImpl implements WalletService {
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
-
-
                 });
     }
 }

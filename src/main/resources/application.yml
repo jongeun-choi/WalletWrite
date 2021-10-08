@@ -28,7 +28,6 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
-    defer-datasource-initialization: true
 
 eureka:
   instance:
@@ -78,7 +77,6 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
-    defer-datasource-initialization: true
 
 eureka:
   instance:
@@ -121,7 +119,6 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-    defer-datasource-initialization: true
 
 
 eureka:
@@ -141,7 +138,7 @@ kafka:
   consumer:
     key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
     value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    group.id: walletread
+    group.id: walletwrite
     auto.offset.reset: earliest
   producer:
     key.serializer: org.apache.kafka.common.serialization.StringSerializer

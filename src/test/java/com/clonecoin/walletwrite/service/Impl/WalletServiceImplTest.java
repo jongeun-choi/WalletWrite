@@ -32,17 +32,6 @@ class WalletServiceImplTest {
 
     private ModelMapper modelMapper = new ModelMapper();
 
-    @Test
-    void save() {
-        TestDTO testDTO = new TestDTO(55L);
-        Wallet wallet = new Wallet();
-
-        modelMapper.map(testDTO, wallet);
-
-        System.out.println(wallet.getUserId());
-
-        assertThat(wallet.getUserId(), is(equalTo(55L)));
-    }
 
     @Test
     void createWallet() {
